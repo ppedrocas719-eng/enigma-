@@ -397,20 +397,12 @@
                 } else {
                     body.innerHTML = `
                         <p><b>[ COFRE DESBLOQUEADO ]</b></p><br>
-                        <p>Sinal de áudio interceptado:</p><br>
-                        
-                        <!-- Player com o ficheiro de áudio morse -->
-                        <audio controls autoplay style="width: 100%; margin-bottom: 10px;">
-                            <source src="morse.mp3" type="audio/mp3">
-                            Seu navegador não suporta o player de áudio.
-                        </audio>
-
                         <p><b>Bloco Cifrado Auxiliar (Chave: CHAVE):</b></p>
                         <p style="font-family: monospace; background: #eee; padding: 6px; margin-top: 5px;">CVRRFC3R4</p>
                     `;
                 }
             } 
-                        else if(id === 'secret') {
+            else if(id === 'secret') {
                 title.innerText = "???";
                 if(!secretDesbloqueado) {
                     body.innerHTML = `
@@ -430,15 +422,28 @@
                             Seu navegador não suporta vídeos.
                         </video>
 
-                        <!-- Áudio em código morse tocando junto com o vídeo -->
-                        <audio autoplay loop style="display: none;">
+                        <!-- Áudio do código morse oculto e sem controles de pausa -->
+                        <audio id="audioMorse" autoplay loop style="display: none;">
                             <source src="morse.mp3" type="audio/mp3">
                         </audio>
                     `;
+
+                    // Força o áudio a tocar mesmo se o navegador tentar bloquear o autoplay
+                    setTimeout(() => {
+                        let audio = document.getElementById('audioMorse');
+                        if (audio) audio.play().catch(() => {});
+                    }, 100);
                 }
             }
+        }
 
         function fecharModal() {
+            // Para o áudio quando a janela é fechada
+            let audio = document.getElementById('audioMorse');
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
             document.getElementById('modal').style.display = "none";
         }
 
